@@ -7,10 +7,10 @@ namespace Assignment6
     {
         //Claim new map data
         public Map map;
-        public int mapW = 5;
-        public int mapH = 10;
-        public int monAmt = 5;
-        public int bombAmt = 5;
+        public int mapW = 4;
+        public int mapH = 3;
+        public int monAmt = 3;
+        public int bombAmt = 3;
         public int potionAmt = 3;
 
         public Mission()
@@ -23,6 +23,12 @@ namespace Assignment6
             {
                 map = new Map(mapW, mapH);
                 map.FillIn(monAmt, bombAmt, potionAmt);
+
+                foreach (object obj in map.map)
+                {
+                    Console.Write( obj.GetType().Name + " ");
+                }
+
             }
         }
 
@@ -30,7 +36,7 @@ namespace Assignment6
         public bool InitSuccess()
         {
             //Item amt > map size
-            if (monAmt + bombAmt + potionAmt > mapW * mapH)
+            if ((monAmt + bombAmt + potionAmt) > mapW * mapH)
             {
                 return false;
             }

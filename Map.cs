@@ -5,7 +5,7 @@ namespace Assignment6
 {
     public class Map : IEnumerable
     {
-        private object[,] map;
+        public object[,] map;
 
         public Map(int w, int h)
         {
@@ -25,36 +25,91 @@ namespace Assignment6
         {
             Random posX = new Random();
             Random posY = new Random();
-            int x = posX.Next(1, map.Rank);//Generate random position x
-            int y = posY.Next(1, map.GetLength(1));//Generate random position y
+            int monOnMap = 0;
+            int bombOnMap = 0;
+            int potionOnMap = 0;
 
             //Fill in Monster
-            for(int monOnMap = 0; monOnMap < monAmt; monOnMap++)
+            for (int i = 0; i < map.Length; i++)
             {
-                if (map[x, y] == null)
+                int x = posX.Next(1, map.GetLength(0));//Generate random position x
+                int y = posY.Next(1, map.GetLength(1));//Generate random position y
+
+                if (monOnMap == monAmt)
                 {
-                    Monster mon = new Monster();
-                    map[x, y] = mon;
+                    break;
+                }
+                else
+                {
+                    if (map[x, y] == null)
+                    {
+                        Monster mon = new Monster();
+                        map[x, y] = mon;
+                        monOnMap += 1;
+                        Console.WriteLine("AddMon");
+                    }
                 }
             }
 
             //Fill in Bomb
-            for(int bombOnMap = 0; bombOnMap < bombAmt; bombOnMap++)
+            for(int i = 0; i < map.Length; i++)
             {
-                if (map[x, y] == null)
+                int x = posX.Next(1, map.GetLength(0));//Generate random position x
+                int y = posY.Next(1, map.GetLength(1));//Generate random position y
+
+                if (bombOnMap == bombAmt)
                 {
-                    map[x, y] = Item.bomb;
+                    break;
                 }
+                else
+                {
+                    if (map[x, y] == null)
+                    {
+                        Item bomb = new Item(Item.bomb);
+                        map[x, y] = bomb;
+                        bombOnMap += 1;
+                        Console.WriteLine("AddBomb");
+                    }
+                }
+             
             }
 
             //Fill in Potion
-            for(int potionOnMap = 0; potionOnMap < potionAmt; potionOnMap++)
+            for(int i = 0; i < map.Length; i++)
             {
-                if(map[x, y] == null)
+                int x = posX.Next(1, map.GetLength(0));//Generate random position x
+                int y = posY.Next(1, map.GetLength(1));//Generate random position y
+
+                if (potionOnMap == potionAmt)
                 {
-                    map[x, y] = Item.potion;
+                    break;
                 }
+                else
+                {
+                    if (map[x, y] == null)
+                    {
+                        Item potion = new Item(Item.potion);
+                        map[x, y] = potion;
+                        potionOnMap += 1;
+                        Console.WriteLine("AddPotion");
+                    }
+                }
+                
             }   
+
+            //Fill in int 0 while null, prevents "NullReferenceException"
+            for(int i = 0; i < map.GetLength(0); i++)
+            {
+                int a = map.GetLength(1);
+                for(int j = 0; j < map.GetLength(1); j++)
+                {
+                    if(map[i, j] == null)
+                    {
+                        map[i, j] = 0;
+                        Console.WriteLine("Set0");
+                    }
+                }
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -85,15 +140,17 @@ namespace Assignment6
         //move on x dir
         public bool MoveNext()
         {
-            posX ++;
-            return (posX < map.Length && posY < map.GetLength(posX));
+            posX += 1;
+            Console.WriteLine($"{posX}, {posY}");
+            return (posX < map.GetLength(0) && posY < map.GetLength(1));
         }
 
         //move on y dir
         public bool MoveDown()
         {
-            posY ++;
-            return (posX < map.Length && posY < map.GetLength(posX));
+            posY += 1;
+            Console.WriteLine($"{posX}, {posY}");
+            return (posX < map.GetLength(0) && posY < map.GetLength(1));
         }
 
         public void Reset()

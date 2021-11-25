@@ -21,15 +21,16 @@ namespace Assignment6
             mapEnum = mission.map.GetEnumerator();
             program = new Program();
 
+
             Console.WriteLine("開始遊戲！");
             Console.WriteLine($"任務目標：從(0,0)走到({mission.mapW},{mission.mapH})！每次可以選擇x+1或y+1。");
 
             while (true)
             {
                 Console.WriteLine("0 => 結束遊戲; 1 => 顯示玩家狀態; D => x+1; S => y+1");
-                string keyin = Console.ReadLine();//player enter key
+                string keyin = Console.ReadLine().ToUpper();//player enter key
                 
-                if (program._pActions.ContainsKey(keyin) == true)
+                if (program._pActions.ContainsKey(keyin) == true && (keyin == "0" || keyin == "1" || keyin == "D" || keyin == "S"))
                 {
                     Action<int> pAct = program._pActions[keyin];
                     pAct(0);
@@ -37,7 +38,6 @@ namespace Assignment6
                 else
                 {
                     Console.WriteLine("請輸入正確指令");
-                    break;
                 }
 
                 //Mission fail
@@ -111,8 +111,11 @@ namespace Assignment6
 
         public void YAddOne(int i)
         {
-            Console.WriteLine("Y移動了一格");
             player.y += 1;
+
+            Console.WriteLine("Y移動了一格");
+            Console.WriteLine($"{player.x}, {player.y}");
+            
             while (mapEnum.MoveDown())
             {
                 if (mapEnum.Current.GetType() == typeof(Monster))
@@ -127,7 +130,6 @@ namespace Assignment6
                     player.bag.bagArr = player.bag.AddToBag(itemGot);
                     string itemName = itemGot.GetName();
                     Console.WriteLine("你獲得了" + itemName);
-
                 }
                 else
                 {
@@ -138,8 +140,11 @@ namespace Assignment6
 
         public void XAddOne(int i)
         {
-            Console.WriteLine("X移動了一格");
             player.x += 1;
+
+            Console.WriteLine("X移動了一格");
+            Console.WriteLine($"{player.x}, {player.y}");
+            
             while (mapEnum.MoveDown())
             {
                 if (mapEnum.Current.GetType() == typeof(Monster))
@@ -147,6 +152,7 @@ namespace Assignment6
                     taMon = (Monster)mapEnum.Current;
                     Console.WriteLine("你遭遇了怪物！");
                     taMon.PrintData();
+                    EnterFight(taMon);
                 }
                 else if (mapEnum.Current.GetType() == typeof(Item))
                 {
@@ -157,7 +163,7 @@ namespace Assignment6
                 }
                 else
                 {
-                    Console.WriteLine("一片荒涼⋯⋯");
+                    Console.WriteLine("一片荒涼......");
                 }
             }
         }
@@ -170,7 +176,8 @@ namespace Assignment6
         public void AttackMon(int i)
         {
             int orignState = taMon.state;
-            player.GroupAttackandPrintResult(null, taMon, player);
+            Item dontUseItem = new Item(Item.none);
+            player.GroupAttackandPrintResult(dontUseItem, taMon, player);
             mission.GalcRoundResultAndPrint(taMon, player, taMon.MonStateChangeOrNot(orignState));
         }
 
@@ -191,7 +198,7 @@ namespace Assignment6
             player.hp = taMon.AttackandPrintResult(player);
             mission.GalcRoundResultAndPrint(taMon, player, taMon.MonStateChangeOrNot(orignState));
         }
-
+        
         public void QuitGame(int i)
         {
             Console.WriteLine("確定結束遊戲？\nYes => Press 0; No => Press 1");
@@ -207,6 +214,27 @@ namespace Assignment6
                 else if (checkQuitToInt == 1)
                 {
                     Console.WriteLine("繼續遊戲");
+                }
+                else
+                {
+                    Console.WriteLine("請輸入正確指令");
+                }
+            }
+        }
+
+        public void EnterFight(Monster mon)
+        {
+            taMon = mon;
+
+            while (taMon.hp != 0)
+            {
+                Console.WriteLine("2 => 攻擊; 3 => 使用炸彈; 4 => 使用藥水");
+                string keyin = Console.ReadLine().ToUpper();//player enter key
+
+                if (program._pActions.ContainsKey(keyin) == true && (keyin == "2" || keyin == "3" || keyin == "4"))
+                {
+                    Action<int> pAct = program._pActions[keyin];
+                    pAct(0);
                 }
                 else
                 {
