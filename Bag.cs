@@ -14,7 +14,7 @@ namespace Assignment6
                 bagArr[i] = new Item(Item.none);
             }
         }
-
+        Console.Write(1);
         //Show item in bag
         public void PrintBagContent()
         {
